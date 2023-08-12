@@ -9,6 +9,8 @@ type Letter = {
 
 const initialLetter: Letter = { text: '', status: 'UNKNOWN' };
 
+// sorry, I don't have enough time for clean my final code. usually I don't use a lot of functions in a component.
+
 function App() {
   const [activeColumn, setActiveColumn] = useState(0);
   const [activeRow, setActiveRow] = useState(0);
@@ -37,11 +39,19 @@ function App() {
   }, [letters]);
 
   useEffect(() => {
-    if (activeRow > 4) {
-      setGameStatus('You Lose');
-      document.removeEventListener('keydown', handleKeyDown);
+    if (activeRow > 0) {
+      const letterNotGreen = letters[activeRow - 1].find(
+        (letter) => letter.status !== 'GREEN'
+      );
+      if (letterNotGreen === undefined) {
+        setGameStatus('You Win!');
+        document.removeEventListener('keydown', handleKeyDown);
+      } else if (activeRow > 4) {
+        setGameStatus('You Lose');
+        document.removeEventListener('keydown', handleKeyDown);
+      }
     }
-  }, [checkedLetters.greenLetters, activeRow]);
+  }, [activeRow]);
 
   const handleKeyDown = (key: string | KeyboardEvent) => {
     if (key instanceof KeyboardEvent) {
@@ -98,6 +108,15 @@ function App() {
     tempRow[column] = letterState;
     temp[row] = [...tempRow];
     setLetters([...temp]);
+  };
+
+  const resetGame = () => {
+    setActiveColumn(0);
+    setActiveRow(0);
+    setGameStatus('');
+    setCheckLetters({ greenLetters: '', blackLetters: '', yellowLetters: '' });
+    const temp = Array(5).fill(Array(5).fill(initialLetter));
+    setLetters(temp);
   };
 
   const renderBackgroundColor = (
@@ -169,13 +188,16 @@ function App() {
           ))}
         </div>
         <div className="flex gap-2">
-          <RenderKey letter={'ENTER'} />
+          <RenderKey letter={'Enter'} />
           {'ASDFGHJKL'.split('').map((item, index) => (
             <RenderKey key={item} letter={item} />
           ))}
-          <RenderKey letter={'ENTER'} />
+          <RenderKey letter={'Backspace'} />
         </div>
       </div>
+      <button className="text-2xl font-bold mt-10" onClick={resetGame}>
+        Reset
+      </button>
     </div>
   );
 }
