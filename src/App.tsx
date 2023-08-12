@@ -36,9 +36,12 @@ function App() {
     };
   }, [letters]);
 
-  // useEffect(() => {
-  //   if (checkedLetters.greenLetters.length === )
-  // }, [checkedLetters.greenLetters, activeRow])
+  useEffect(() => {
+    if (activeRow > 4) {
+      setGameStatus('You Lose');
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [checkedLetters.greenLetters, activeRow]);
 
   const handleKeyDown = (key: string | KeyboardEvent) => {
     if (key instanceof KeyboardEvent) {
@@ -127,7 +130,7 @@ function App() {
     return (
       <button
         className="h-[58px] flex items-center justify-center text-xl font-bold rounded-[4px] px-3.5"
-        onClick={() => handleKeyDown(letter)}
+        onClick={gameStatus === '' ? () => handleKeyDown(letter) : () => {}}
         style={{ backgroundColor: renderBackgroundColor(status, true) }}
       >
         {letter}
@@ -136,7 +139,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center bg-black pt-[100px] pb-10">
+    <div className="flex flex-col items-center bg-black pt-[100px] pb-10 h-screen">
       <p className="text-2xl font-bold mb-10">{gameStatus}</p>
       {letters.length > 0 &&
         letters.map((row, rowIndex) => (
