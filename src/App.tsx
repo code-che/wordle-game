@@ -195,9 +195,11 @@ function App() {
           <RenderKey letter={'Backspace'} />
         </div>
       </div>
-      <button className="text-2xl font-bold mt-10" onClick={resetGame}>
-        Reset
-      </button>
+      {gameStatus !== '' && (
+        <button className="text-2xl font-bold mt-10" onClick={resetGame}>
+          Reset
+        </button>
+      )}
     </div>
   );
 }
